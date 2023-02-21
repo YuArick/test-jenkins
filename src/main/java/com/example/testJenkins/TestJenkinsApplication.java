@@ -9,7 +9,7 @@ public class TestJenkinsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TestJenkinsApplication.class, args);
-		System.out.println("123");
+		System.out.println("555");
 	}
 
 }
