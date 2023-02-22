@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>My first Page by thymeleaf</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+	<div th:text="計算機" />
+	</div>
+	<input id='number1'>
+	<input id='number2'>
+	<div style='display:flex;align-items: center;'>
+		<p>ans</p><input id='ans' readonly style='height: 20px;'>
+	</div>
+	<button id='method1'>加</button>
+	<button id='method2'>減</button>
+	<button id='method3'>乘</button>
+	<button id='method4'>除</button>
+	<script>
+		function post(e) {
+			console.log(e)
+			var myData = {
+				"a": number1.value,
+				"b": number2.value
+			};
+			let date = JSON.stringify(myData);
+			fetch('/' + e, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: date})
+				.then((response) => {
+					// 這裡會得到一個 ReadableStream 的物件
+					console.log(response);
+					// 可以透過 blob(), json(), text() 轉成可用的資訊
+					return response.text();
+				}).then((text) => {
+					ans.value=text;
+				}).catch((err) => {
+					console.log('錯誤:', err);
+				});
+		}
+		const m1 = document.querySelector("#method1");
+		const m2 = document.querySelector("#method2");
+		const m3 = document.querySelector("#method3");
+		const m4 = document.querySelector("#method4");
+		const i1 = document.querySelector("#number1");
+		const i2 = document.querySelector("#number2");
+		const ans = document.querySelector("#ans");
+		m1.addEventListener("click", () => post("method1"));
+		m2.addEventListener("click", () => post("method2"));
+		m3.addEventListener("click", () => post("method3"));
+		m4.addEventListener("click", () => post("method4"));
+	</script>
+</body>
+
+</html>
