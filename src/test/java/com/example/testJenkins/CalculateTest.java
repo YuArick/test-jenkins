@@ -3,6 +3,11 @@
  */
 package com.example.testJenkins;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,12 +22,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.ui.ModelMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -130,5 +138,17 @@ class CalculateTest {
 				.andExpect(status().isOk()).andExpect(content().string("2"));
 		System.out.println("pass");
 	}
+    @InjectMocks
+    private Calculate calculate;
+
+    @Mock
+    private ModelMap modelMap;
+
+    @Test
+    public void testCalculate() {
+        String result = calculate.calculate();
+        assertEquals("index", result);
+//        verify(modelMap, times(1)).addAttribute(eq("message"), anyString());
+    }
 
 }
