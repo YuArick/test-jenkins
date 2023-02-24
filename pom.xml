@@ -90,10 +90,20 @@
 					</execution>
 					<execution>
 						<id>report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
 						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
+						<configuration>
+							<dataFile>target/jacoco.exce</dataFile>
+							<outputDirectory>target/jaco-ut</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
