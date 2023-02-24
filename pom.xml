@@ -71,7 +71,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<phase>test</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>cobertura</goal>
 						</goals>
@@ -90,7 +90,7 @@
 					</execution>
 					<execution>
 						<id>report</id>
-						<phase>test</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
