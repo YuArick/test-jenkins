@@ -24,7 +24,7 @@ public class Calculate {
 	@ResponseBody
 	public String method2(@RequestBody Map<String, Object> params) {
 		String ans = Integer.parseInt((String) params.get("a")) - Integer.parseInt((String) params.get("b")) + "";
-		return ans+1;
+		return ans;
 	}
 	@RequestMapping("/method3")
 	@ResponseBody
