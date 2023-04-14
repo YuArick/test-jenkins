@@ -4,10 +4,13 @@
 package com.example.testJenkins;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -74,11 +78,13 @@ class CalculateTest {
 	@Test
 	@DisplayName("測試加法")
 	final void testMethod1() throws Exception {
+		//1. Arrange (準備)：建立物件
 		Map<String, Object> params = new HashMap<>();
 		params.put("a", "10");
 		params.put("b", "5");
+		// 2. Act (執行)：操作物件
 		String jsonParams = new ObjectMapper().writeValueAsString(params);
-
+		// 3. Assert (驗證)：驗證物件是否符合預期結果。
 		mockMvc.perform(
 				MockMvcRequestBuilders.post("/method1").contentType(MediaType.APPLICATION_JSON).content(jsonParams))
 				.andExpect(status().isOk()).andExpect(content().string("15"));
@@ -92,15 +98,24 @@ class CalculateTest {
 	@Test
 	@DisplayName("測試減法")
 	final void testMethod2() throws Exception {
-		Map<String, Object> params = new HashMap<>();
-		params.put("a", "10");
-		params.put("b", "5");
-		String jsonParams = new ObjectMapper().writeValueAsString(params);
+	    // 1. Arrange (準備)：建立物件
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("a", "10");
+	    params.put("b", "5");
 
-		mockMvc.perform(
-				MockMvcRequestBuilders.post("/method2").contentType(MediaType.APPLICATION_JSON).content(jsonParams))
-				.andExpect(status().isOk()).andExpect(content().string("5"));
-		System.out.println("pass");
+	    // 2. Act (執行)：操作物件
+	    String result = new Calculate().method2(params);
+	    
+	    Calculate calculate = Mockito.mock(Calculate.class);
+	    Mockito.when(calculate.method2(params)).thenReturn("6");
+	    String result1= calculate.method2(params);
+	    
+	    // 3. Assert (驗證)：驗證物件是否符合預期結果。
+	    //驗證是否訪問
+	    verify(calculate, times(1)).method2(any());
+	    assertEquals("5", result);
+	    assertEquals("4", result1,"測試錯誤");
+	    System.out.println("pass");
 	}
 
 	/**
