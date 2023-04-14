@@ -4,6 +4,31 @@
 <head>
 	<title>My first Page by thymeleaf</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script src="https://www.gstatic.com/charts/loader.js"></script>
+<!--	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>-->
+	
+<!--	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />-->
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+<!-- Styles -->
+<style>
+#chartcontrols {
+  height: auto;
+  padding: 5px 5px 0 16px;
+  max-width: 100%;
+}
+
+#chartdiv {
+  width: 100%;
+  height: 600px;
+  max-width: 100%;
+}
+</style>	
+<!-- Resources -->
+<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/stock.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+<script src="/view.js"></script>
 </head>
 
 <body>
@@ -14,47 +39,195 @@
 	<div style='display:flex;align-items: center;'>
 		<p>ans</p><input id='ans' readonly style='height: 20px;'>
 	</div>
+	<br>
 	<button id='method1'>加</button>
 	<button id='method2'>減</button>
 	<button id='method3'>乘</button>
 	<button id='method4'>除</button>
-	<script>
-		function post(e) {
-			console.log(e)
-			var myData = {
-				"a": number1.value,
-				"b": number2.value
-			};
-			let date = JSON.stringify(myData);
-			fetch('/' + e, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: date})
-				.then((response) => {
-					// 這裡會得到一個 ReadableStream 的物件
-					console.log(response);
-					// 可以透過 blob(), json(), text() 轉成可用的資訊
-					return response.text();
-				}).then((text) => {
-					ans.value=text;
-				}).catch((err) => {
-					console.log('錯誤:', err);
-				});
-		}
-		const m1 = document.querySelector("#method1");
-		const m2 = document.querySelector("#method2");
-		const m3 = document.querySelector("#method3");
-		const m4 = document.querySelector("#method4");
-		const i1 = document.querySelector("#number1");
-		const i2 = document.querySelector("#number2");
-		const ans = document.querySelector("#ans");
-		m1.addEventListener("click", () => post("method1"));
-		m2.addEventListener("click", () => post("method2"));
-		m3.addEventListener("click", () => post("method3"));
-		m4.addEventListener("click", () => post("method4"));
-	</script>
-</body>
+	<br>
+	<label for="stock">股票代號</label>
+	<input id='stock'>
+	<br>
+	<button id='method5'>GET</button>
+	<button id='method6'>GET2</button>
+	<button id='method7'>GETList</button>
+	<button id='method8'>get</button>
+	<span id='result'>
+		<script>
+			function post(e) {
+				console.log(e)
+				var myData = {
+					"a": number1.value,
+					"b": number2.value
+				};
+				let data = JSON.stringify(myData);
+				fetch('/' + e, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: data
+				})
+					.then((response) => {
+						// 這裡會得到一個 ReadableStream 的物件
+						console.log(response);
+						// 可以透過 blob(), json(), text() 轉成可用的資訊
+						return response.text();
+					}).then((text) => {
+						ans.value = text;
+					}).catch((err) => {
+						console.log('錯誤:', err);
+					});
+			}
+			function getList(e) {
+				console.log(e)
+				var myData = {
+					"a": number1.value,
+					"b": number2.value
+				};
+				let data = JSON.stringify(myData);
+				fetch('/' + e, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: data
+				})
+					.then(response => response.json() 
+					.then(data => {
+						console.log(data)
+						//data.forEach(e=>console.log(Object.keys(e).length))
+						addTable(data)
+						}
+					)
+					.catch((err) => console.log('錯誤:', err)));
+			}
+			function post1(e) {
+				console.log(e)
+				const div_content = document.querySelector("#chartdiv_div");
+				const div_controls = document.createElement("div");
+				const div_chart = document.createElement("div");
+				div_controls.setAttribute("id","chartcontrols");
+				div_chart.setAttribute("id","chartdiv");
+				div_content.innerHTML="";
+				div_content.appendChild(div_controls);
+				div_content.appendChild(div_chart);
+				//chartcontrolsdiv.innerHTML="";
+				var myData = {
+					"stock": stock.value
+				};
+				let data = JSON.stringify(myData);
+				fetch('/' + e, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: data
+				})
+					.then(response => response.json() 
+					.then(data => {
+						//data.forEach(e=>console.log(Object.keys(e).length))
+						test(data)
+						}
+					)
+					.catch((err) => console.log('錯誤:', err)));
+
+
+			}
+			// 呼叫 Google Charts 繪製股票柱狀圖
+			const m1 = document.querySelector("#method1");
+			const m2 = document.querySelector("#method2");
+			const m3 = document.querySelector("#method3");
+			const m4 = document.querySelector("#method4");
+			const m5 = document.querySelector("#method5");
+			const m6 = document.querySelector("#method6");
+			const m7 = document.querySelector("#method7");
+			const m8 = document.querySelector("#method8");
+			const i1 = document.querySelector("#number1");
+			const i2 = document.querySelector("#number2");
+			const ans = document.querySelector("#ans");
+			const result = document.querySelector("#result");
+			m1.addEventListener("click", () => post("method1"));
+			m2.addEventListener("click", () => post("method2"));
+			m3.addEventListener("click", () => post("method3"));
+			m4.addEventListener("click", () => post("method4"));
+			m5.addEventListener("click", () => post1("method5"));
+			m6.addEventListener("click", () => post1("method6"));
+			m7.addEventListener("click", () => post("method7"));
+			m8.addEventListener("click", () => getList("method8"));
+			
+			//
+			function addTable2(data) {
+					const container = document.querySelector('#example');
+					const hot = new Handsontable(container, {
+						data,
+						colHeaders: ['code', 'name', 'industry','category',""],
+						rowHeaders: false,
+						filters: true,
+						dropdownMenu: ['filter_by_condition', 'filter_action_bar'],
+						height: 'auto',
+						licenseKey: 'non-commercial-and-evaluation',
+						hiddenColumns: {
+							columns: [4],
+							indicators: true,
+						},
+					});
+			}
+			function addTable(data) {
+					// 取得表格主體元素
+					var tableBody = document.getElementById("myTableBody");
+					// 填充資料到表格中
+					for (var i = 0; i < data.length; i++) {
+						// 創建一個新的行元素
+						var row = document.createElement("tr");
+
+						// 創建一個新的儲存元素，填入資料
+						var codeCell = document.createElement("td");
+						codeCell.textContent = data[i].code;
+						row.appendChild(codeCell);
+
+						var nameCell = document.createElement("td");
+						nameCell.textContent = data[i].name;
+						row.appendChild(nameCell);
+
+						var industryCell = document.createElement("td");
+						industryCell.textContent = data[i].industry;
+						row.appendChild(industryCell);
+
+						var categoryCell = document.createElement("td");
+						categoryCell.textContent = data[i].category;
+						row.appendChild(categoryCell);
+
+						//var cfiCodeCell = document.createElement("td");
+						//cfiCodeCell.textContent = data[i].CFICode;
+						//row.appendChild(cfiCodeCell);
+						// 將行元素加入表格主體元素中
+						tableBody.appendChild(row);
+					}
+				}
+		</script>
+<!--		<div id="chart_div" style="width: 900px; height: 500px;"></div>-->
+		<div id="chartdiv_div">
+			<div id="chartcontrols"></div>
+			<div id="chartdiv"></div>
+		</div>
+		
+		<div id="example"></div>
+		<div id="checkdiv">
+		
+		</div>
+		<table id="myTable">
+			<thead>
+				<tr>
+					<th><button onclick="sortTable(0)">Code</button></th>
+					<th><button onclick="sortTable(1)">Name</button></th>
+					<th><button onclick="sortTable(2)">Industry</button></th>
+					<th><button onclick="sortTable(3)">Category</button></th>
+				</tr>
+			</thead>
+			<tbody id="myTableBody">
+			</tbody>
+		</table>
+	</body>
 
 </html>
